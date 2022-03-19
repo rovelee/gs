@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>双色球</title>
+</head>
+<body>
+	<script>
+		// test
+		let arr=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33];
+		let arr1=[];
+		arr1=arr1.concat(arr);
+		let spr=[],red=[],blue=[];
+		for(i=0;i<6;i++){
+			let r=Math.ceil(Math.random()*arr.length-1);
+			red[i]=arr[r];
+			arr.splice(r,1);
+		}
+		red.sort((a,b)=>a-b);
+		for(j=0;j<red.length;j++){
+			spr[j]=red[j];
+		}
+		let b=Math.ceil(Math.random()*arr1.length-1);
+		blue[blue.length]=arr1[b];
+		spr.push(blue[0]);
+		console.log(spr);
+	</script>
+</body>
+</html>

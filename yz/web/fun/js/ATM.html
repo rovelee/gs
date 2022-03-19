@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>交易ATM</title>
+</head>
+<body>
+	<script>
+			/*var y=100;
+			do{
+				var pmt=prompt('请输入您要进行的操作\n1.存钱\n2.取钱\n3.查询余额\n4.退出');
+				switch(pmt){
+					case '1':
+						var c=Number(prompt('存钱数量'));
+						y+=c;
+						alert('您现在的余额为：'+y);
+						break;
+					case '2':
+						var q=Number(prompt('存钱数量'));
+						y-=q;
+						alert('您现在的余额为：'+y);
+						break;
+					case '3':
+						alert(y);
+						break;
+					case '4':
+						alert('您已退出。');
+						break;
+					default:
+						alert('请进行有效操作');
+					}
+			}while(pmt!=='4');*/
+
+			var y=100;//余额
+			var pmt=Number(prompt('请输入您要进行的操作\n1.存钱\n2.取钱\n3.查询余额\n4.退出'));
+			for(i=1;pmt!=4;i++){
+				switch(pmt){
+					case 1:
+						var c=Number(prompt('存储数量'));
+						y+=c;
+						alert('您现在的余额为：'+y);
+						break;
+					case 2:
+						var q=Number(prompt('取钱数量'));
+						y-=q;
+						alert('您现在的余额为：'+y);
+						break;
+					case 3:
+						alert('您现在的余额为：'+y);
+						break;
+					case 4:
+						alert('您已退出。');
+					default:
+						alert('请进行有效操作');
+				}
+				var pmt=Number(prompt('请输入您要进行的操作\n1.存钱\n2.取钱\n3.查询余额\n4.退出'));
+			}
+			// testgit
+	</script>
+</body>
+</html>
