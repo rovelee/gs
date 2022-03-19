@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>demo1</title>
+</head>
+
+<body>
+    <p id="demo">  hoW daRe yOu</p>
+    <button type="button" onclick="replaceEvent()">将每个单词首字母改为大写</button>
+    <script>
+        function replaceEvent() {
+            var str = document.getElementById("demo").innerHTML;
+            document.getElementById("demo").innerHTML = rp(str);
+        }
+        function rp(str) {
+            var clst = str.split(""), re = "";
+            console.log(clst);
+            for (s = 0, i = 0; i < clst.length; i++) {
+                if (s == 0) {
+                    if (clst[i] == " ") {
+                        continue;
+                    }
+                    re += clst[i].toUpperCase();
+                    s = 1;
+                    console.log(re);
+                    continue;
+                }
+                if (clst[i-1] == " ") {
+                    re += clst[i].toUpperCase();
+                    console.log(re);
+                    continue;
+                }
+                re += clst[i].toLowerCase();
+                console.log(re);
+            }
+            return re;
+        }
+    </script>
+</body>
+
+</html>
