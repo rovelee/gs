@@ -7,5 +7,8 @@ test-bits: test-bits.c bit-operator.c
 ex-test: ex-test.c
 	gcc -o ex-test.test ex-test.c
 
+fcomp: fcomp.c
+	gcc -O2 -o fcomp.test fcomp.c
+
 clean:
 	rm -f *.o *.test

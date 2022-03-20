@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <limits.h>
 #include "show.c"
 
 void fn2_ex213(char *msg, int x)
@@ -82,14 +83,32 @@ int fun2_ex221(unsigned word)
 
 void ex221()
 {
-    unsigned w1 = 127, w2 = 128, w3=255, w4=256;
-    printf("%u %d %d\n", w1,fun1_ex221(w1),fun2_ex221(w1));
-    printf("%u %d %d\n", w2,fun1_ex221(w2),fun2_ex221(w2));
-    printf("%u %d %d\n", w3,fun1_ex221(w3),fun2_ex221(w3));
-    printf("%u %d %d\n", w4,fun1_ex221(w4),fun2_ex221(w4));
+    unsigned w1 = 127, w2 = 128, w3 = 255, w4 = 256;
+    printf("%u %d %d\n", w1, fun1_ex221(w1), fun2_ex221(w1));
+    printf("%u %d %d\n", w2, fun1_ex221(w2), fun2_ex221(w2));
+    printf("%u %d %d\n", w3, fun1_ex221(w3), fun2_ex221(w3));
+    printf("%u %d %d\n", w4, fun1_ex221(w4), fun2_ex221(w4));
 }
 
-void ex222(){
+void ex222()
+{
     unsigned le = 0;
     printf("0 - 1 (unsigned) = %u\n", le - 1);
+}
+
+void ex237()
+{
+    int ix = INT_MAX;
+    float fx = 1.0;
+    double dx = __FLT_MAX__;
+    int a, b, c, d, e, f, g, h;
+    a = ix == (int)(float)ix; //单精度能表示的最大整数是 2^24，而整形最大的数是 2^31，所以 a=0
+    b = ix == (int)(double)ix;
+    c = fx == (float)(double)fx;
+    d = dx == (float)d; // 双精度大于单精度最大值时，舍去一半后的数不等。
+    e = fx == -(-fx);
+    f = 2 / 3 == 2 / 3.0; // 整形舍入整形，不等于浮点数
+    g = (dx >= 0.0) || ((dx * 2) < 0.0);
+    h = (dx + fx) - dx == fx; // 舍入会导致fx丢失
+    printf("a:%d b:%d c:%d d:%d e:%d f:%d g:%d h:%d\n", a, b, c, d, e, f, g, h);
 }
