@@ -44,6 +44,12 @@ int main(int argc, char const *argv[])
         case 243:
             ex243();
             break;
+        case 244:
+            ex244();
+            break;
+        case 245:
+            ex245();
+            break;
         case 246:
             ex246();
             break;

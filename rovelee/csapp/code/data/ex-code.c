@@ -276,3 +276,47 @@ void ex243()
     r4 = ex242_d(x4);
     printf("D、a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d\n", x1, r1, x2, r2, x3, r3, x4, r4);
 }
+
+int int_shifts_are_arithmetic()
+{
+    int i1, le;
+    i1 = 1;
+    le = (sizeof(int) * 8 - 1);
+    return ((i1 << le) >> le) == 1 ? 0 : i1;
+}
+
+int unsigned_shifts_are_arithmetic()
+{
+    unsigned i2, le;
+    i2 = 1;
+    le = (sizeof(unsigned int) * 8 - 1);
+    return ((i2 << le) >> le) == 1 ? 0 : i2;
+}
+
+void ex244()
+{
+    printf("当前机器的有符号整数右移是%s\n", int_shifts_are_arithmetic() == 1 ? "算术右移" : "逻辑右移");
+    printf("当前机器的无符号整数右移是%s\n", unsigned_shifts_are_arithmetic() == 1 ? "算术右移" : "逻辑右移");
+}
+
+int int_size_is_32()
+{
+    int set_msb = 0x80; // 一个字节
+    int cnt = 8;
+    /*  当1位于最高位时set_msb小于0，退出循环
+        如果sizeof(int)==16，则一次循环退出，cnt==16
+        如果sizeof(int)==32，则三次循环退出，cnt==32
+        如果sizeof(int)>32，则在第n/4-1次循环时退出，cnt==n */
+    while (set_msb > 0) 
+    {
+        show_bits_int(set_msb);
+        set_msb = set_msb << 8; //一次左移一个字节
+        cnt+=8;
+    }
+    return cnt == 32;
+}
+
+void ex245()
+{
+    printf("%d\n", int_size_is_32());
+}
