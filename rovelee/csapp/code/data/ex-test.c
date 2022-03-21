@@ -4,6 +4,7 @@
 int main(int argc, char const *argv[])
 {
     int i;
+    /* 带参数输入题号，运行对应题号的程序 */
     for (i = 0; i < argc; ++i)
     {
         switch (atoi(argv[i]))
@@ -28,6 +29,23 @@ int main(int argc, char const *argv[])
             break;
         case 237:
             ex237();
+        case 238:
+            ex238();
+            break;
+        case 240:
+            ex240();
+            break;
+        case 241:
+            ex241();
+            break;
+        case 242:
+            ex242();
+            break;
+        case 243:
+            ex243();
+            break;
+        case 246:
+            ex246();
             break;
         default:
             break;

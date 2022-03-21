@@ -112,3 +112,167 @@ void ex237()
     h = (dx + fx) - dx == fx; // 舍入会导致fx丢失
     printf("a:%d b:%d c:%d d:%d e:%d f:%d g:%d h:%d\n", a, b, c, d, e, f, g, h);
 }
+
+typedef unsigned packed_t;
+
+int xbyte(packed_t word, int bytenum)
+{
+    return (word >> (bytenum << 3)) & 0xff;
+}
+
+int xxbyte(packed_t word, int bytenum)
+{
+    int lm = (int)(sizeof(int) * 8 - 8);
+    return ((int)((word >> (bytenum << 3)) & 0xff) << lm) >> lm;
+}
+
+void ex246()
+{
+    packed_t x = 0xff00;
+    int xx = xbyte(x, 1);
+    show_bytes_int(xx);
+    printf("%d\n", xx);
+    xx = xxbyte(x, 1);
+    show_bytes_int(xx);
+    printf("%d\n", xx);
+}
+
+#include "show-bytes.c"
+
+void ex238()
+{
+    int tx = 3;
+    show_bytes((byte_pointer)&tx, sizeof(tx));
+    tx = 333333;
+    show_bytes((byte_pointer)&tx, sizeof(tx));
+}
+
+void ex240()
+{
+    short sx = 30;
+    long lx = 3000;
+    double dx = 10201.0;
+    show_short(&sx);
+    show_long(&lx);
+    show_double(&dx);
+}
+
+int is_little_endian()
+{
+    /* 如果第一个字节是1，则说明是小端机器，其他字节都为0，所以如果是大端机器，则返回0*/
+    int x = 1;
+    byte_pointer first_byte = (byte_pointer)&x;
+    return *first_byte;
+}
+
+void ex241()
+{
+    printf("这台电脑是%s端机器\n", is_little_endian() == 1 ? "小" : "大");
+}
+
+int generate_a_word(int x, int y)
+{
+    /* 生成一个字，由x的最低字节和y中的剩余字节组成 */
+    return (x & 0xff) | (y & (-1 << 8));
+}
+
+void ex242()
+{
+    int a = generate_a_word(0x89abcdef, 0x76543210);
+    show_bytes_int(a); // 76 54 32 ef
+}
+
+int ex242_a(int x)
+{
+    unsigned ux = x;
+    int result = 1, le = sizeof(int) * 8 - 1;
+    for (int i = 0; i <= le; i++)
+    {
+        int cb = (((ux >> i) << le) >> le);
+        result = result && cb;
+    }
+    return result;
+}
+int ex242_b(int x)
+{
+    unsigned ux = x;
+    int result = 0, le = sizeof(int) * 8 - 1;
+    for (int i = 0; i <= le; i++)
+    {
+        int cb = (((ux >> i) << le) >> le);
+        result = result || cb;
+    }
+    return !result;
+}
+int ex242_c(int x)
+{
+    unsigned ux = x;
+    int result = 0, le = sizeof(int) * 8 - 1;
+    for (int i = 8; i <= le; i++)
+    {
+        int cb = (((ux >> i) << le) >> le);
+        result = result || cb;
+    }
+    if ((result = !result))
+    {
+        for (int i = 0; i < 8; i++)
+            result = result && (((ux >> i) << le) >> le);
+    }
+    return result;
+}
+int ex242_d(int x)
+{
+    unsigned ux = x;
+    int result = 0, le = sizeof(int) * 8 - 1;
+    for (int i = 0; i < 8; i++)
+    {
+        int cb = (((ux >> i) << le) >> le);
+        // show_bits_int(cb);
+        result = result || cb;
+    }
+    if ((result = !result))
+    {
+        for (int i = 8; i < le; i++)
+            result = result && (((ux >> i) << le) >> le);
+    }
+    return result;
+}
+void ex243()
+{
+    /* 只使用位级运算和逻辑运算在下列条件下产生1，而在其他情况下产生0 */
+    int x1, x2, x3, x4;
+
+    x1 = -1;
+    // show_bytes_int(x1);
+    x2 = 0;
+    // show_bytes_int(x2);
+    x3 = 0xff;
+    // show_bytes_int(x3);
+    x4 = -1 << 8;
+    // show_bytes_int(x4);
+    /* A、x的任何位都等于1*/
+    int r1, r2, r3, r4;
+    r1 = ex242_a(x1);
+    r2 = ex242_a(x2);
+    r3 = ex242_a(x3);
+    r4 = ex242_a(x4);
+    printf("A、a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d\n", x1, r1, x2, r2, x3, r3, x4, r4);
+    /* B、x的任何位都等于0*/
+    r1 = ex242_b(x1);
+    r2 = ex242_b(x2);
+    r3 = ex242_b(x3);
+    r4 = ex242_b(x4);
+    printf("B、a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d\n", x1, r1, x2, r2, x3, r3, x4, r4);
+    /* C、x的最低字节都为1*/
+    r1 = ex242_c(x1);
+    r2 = ex242_c(x2);
+    r3 = ex242_c(x3);
+    r4 = ex242_c(x4);
+    printf("C、a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d\n", x1, r1, x2, r2, x3, r3, x4, r4);
+    /* D、x的最低字节都为0*/
+    r1 = ex242_d(x1);
+    r2 = ex242_d(x2);
+    r3 = ex242_d(x3);
+    r4 = ex242_d(x4);
+    printf("D、a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d a(%.2x)=%d\n", x1, r1, x2, r2, x3, r3, x4, r4);
+}
