@@ -1,4 +1,4 @@
-// 声明变量存储定时器执行次数
+// 声明变量存储定时器执行次数 
 var i=1;
 // 设置周期定时器，每隔3s执行一次
 var timer=setInterval(function(){
