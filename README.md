@@ -71,7 +71,9 @@ $ mkdir rovelee //mkdir是Linux下创建文件夹的命令
 
 :computer:[Windows Terminal](https://github.com/microsoft/terminal)：Windows下的一款终端，非常好用。
 
-:laughing:[Doocs开源社区](https://github.com/doocs)：一个中文 GitHub 社区
+:laughing:[Doocs开源社区](https://github.com/doocs)：一个中文 GitHub 社区。
+
+:book: [Z-Library](https://zh.z-lib.org/)：全世界最大的数字图书馆，拥有大量的电子书和文档资源。
 
 :togo: (待补充……)
 
