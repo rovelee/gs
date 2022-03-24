@@ -14,12 +14,134 @@ struct foo
  */
 #define reflect(x) __attribute__((section("foos"))) struct foo _##x = {x, #x};
 /* 一个用以测试的函数 */
-void test()
+void ex0()
 {
     printf("reflect test\n");
 }
-/* 反射 test 函数 */
-reflect(test);
+/* 反射该测试函数 */
+reflect(ex0);
+
+/* 课后代码习题 */
+
+/* show_bytes 函数，使用强制类型转换来访问和打印程序数据的字节表示 */
+typedef char *byte_pointer;
+
+void show_bytes(byte_pointer start, int len)
+{
+    int i;
+    for (i = 0; i < len; i++)
+    {
+        printf("%.2x", start[i]);
+    }
+    printf("\n");
+}
+
+void show_int(int x)
+{
+    show_bytes((byte_pointer)&x, sizeof(int));
+}
+
+void show_float(float x)
+{
+    show_bytes((byte_pointer)&x, sizeof(float));
+}
+
+void show_pointer(void *x)
+{
+    show_bytes((byte_pointer)&x, sizeof(void *));
+}
+
+void test_show_bytes(int val)
+{
+    int ival = val;
+    float fval = (float)ival;
+    int *pval = &val;
+    show_int(ival);
+    show_float(fval);
+    show_pointer(pval);
+}
+/* 练习题 2.5 */
+void ex5()
+{
+    int val = 0x87654321;
+    byte_pointer valp = (byte_pointer)&val;
+    show_bytes(valp, 1); /* A. 21 */
+    show_bytes(valp, 2); /* B. 2143 */
+    show_bytes(valp, 3); /* C. 214365 */
+}
+reflect(ex5);
+/* 练习题 2.10 */
+void inplace_swap(int *x, int *y)
+{
+    printf("---inplace_swap---\n");
+    show_pointer((byte_pointer)x);
+    show_pointer((byte_pointer)y);
+
+    printf("y := %d ^ %d = ", *x, *y);
+    *y = *x ^ *y;
+    printf("%d\n", *y);
+
+    printf("x := %d ^ %d = ", *x, *y);
+    *x = *x ^ *y;
+    printf("%d\n", *x);
+
+    printf("y := %d ^ %d = ", *x, *y);
+    *y = *x ^ *y;
+    printf("%d\n", *y);
+}
+void istest()
+{
+    int x = 3, y = 3;
+    inplace_swap(&x, &y);
+}
+reflect(istest);
+
+void ex10()
+{
+    int x = 1, y = 2;
+    printf("x = %d, y = %d\n", x, y);
+    inplace_swap(&x, &y);
+    printf("x = %d, y = %d\n", x, y);
+}
+reflect(ex10);
+/* 练习题 2.11 */
+void reverse_array(int a[], int cnt)
+{
+    printf("***reverse_array***\n");
+    int first, last;
+    for (first = 0, last = cnt - 1;
+          first <= last; // change this line
+          /* 
+            The Anser of B:
+            当 a[fisrt] 和 a[last] 的地址相同时，inplace_swap(a[first], a[last]) 中总是两个相同的值在异或，所以它们总是0。
+        */
+        //  first < last; // after change, answer of C.
+         first++, last--)
+        inplace_swap(&a[first], &a[last]);
+    printf("first = %d, last = %d\n", first - 1, last + 1);
+}
+void ex11()
+{
+    printf("###ex11###\n");
+    int even_array[4] = {1, 2, 3, 4};
+    int odd_array[5] = {1, 2, 3, 4, 5};
+
+    reverse_array(even_array, 4);
+    reverse_array(odd_array, 5);
+
+    printf("----print here----\n");
+    for (int i = 0; i < 4; i++)
+    {
+        printf("%d ", even_array[i]);
+    }
+    printf("\n");
+    for (int i = 0; i < 5; i++)
+    {
+        printf("%d ", odd_array[i]);
+    }
+    printf("\n");
+}
+reflect(ex11);
 
 int main(int argc, char const *argv[])
 {
@@ -30,6 +152,7 @@ int main(int argc, char const *argv[])
     */
     extern struct foo __start_foos;
     extern struct foo __stop_foos;
+
     /* 通过循环查找 foos 段中的函数名，然后执行函数名对应的函数，通过这种方式完成了一次“反射” */
     for (struct foo *f = &__start_foos; f < &__stop_foos; f++)
     {
