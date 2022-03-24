@@ -16,6 +16,7 @@ app.use('/login',loginRouter);
 app.use(express.urlencoded({
 	extended:true
 }));
+// 创建函数fn();
 function fn(req,res,next){
 	if(req.body.uname==='root'){
 		res.send('该用户不可用。');
