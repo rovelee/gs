@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>用户登录</title>
+</head>
+<style>
+	.d{
+		width: 220px;
+		height: auto;
+		background-color: aliceblue;
+		margin-left: 20px;
+		padding: 10px 10px 20px 10px;
+	}
+	.sub{
+		margin-top: 10px;
+		margin-left: 50px;
+	}
+	.ipt{
+		margin-bottom: 10px;
+	}
+</style>
+<body>
+	<div class="d">
+		<form method="post" action="/login/mylogin">
+			用户：<input type="text" class="ipt" name="uname"><br>
+			密码：<input type="password" class="ipt" name="upwd"><br>
+			<input type="submit" class="sub" value="login">
+		</form>
+	</div>
+</body>
+</html>

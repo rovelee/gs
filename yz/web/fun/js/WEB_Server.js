@@ -6,6 +6,7 @@ const app=http.createServer();
 app.listen(2022,()=>{
 	console.log('WEB服务器启动成功');
 });
+
 // 请求WEB服务器
 // 域名
 // http:localhost:2022
