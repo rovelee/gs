@@ -110,12 +110,12 @@ void reverse_array(int a[], int cnt)
     printf("***reverse_array***\n");
     int first, last;
     for (first = 0, last = cnt - 1;
-          first <= last; // change this line
-          /* 
-            The Anser of B:
-            当 a[fisrt] 和 a[last] 的地址相同时，inplace_swap(a[first], a[last]) 中总是两个相同的值在异或，所以它们总是0。
-        */
-        //  first < last; // after change, answer of C.
+         first <= last; // change this line
+                        /*
+                          The Anser of B:
+                          当 a[fisrt] 和 a[last] 的地址相同时，inplace_swap(a[first], a[last]) 中总是两个相同的值在异或，所以它们总是0。
+                      */
+                        //  first < last; // after change, answer of C.
          first++, last--)
         inplace_swap(&a[first], &a[last]);
     printf("first = %d, last = %d\n", first - 1, last + 1);
@@ -142,6 +142,67 @@ void ex11()
     printf("\n");
 }
 reflect(ex11);
+/* 练习题27 */
+/* 如果 x 和 y 相加不会溢出，这个函数就返回 1 */
+int uadd_ok(unsigned x, unsigned y)
+{
+    int is_overflow;
+    is_overflow = x > (x + y) || y > (x + y);
+    return !is_overflow;
+}
+void ex27()
+{
+    unsigned x, y;
+    x = 1 << 31;
+    y = 1 << 31;
+    show_int(x);
+    show_int(y);
+    printf("%u + %u = %u\n", x, y, x + y);
+    printf("%d\n", uadd_ok(x, y)); // 1表示没有溢出，0表示溢出
+}
+reflect(ex27);
+/* 练习题30 */
+/* 如果 x 和 y 相加不会溢出，这个函数就返回 1 */
+int tadd_ok(int x, int y)
+{
+    if (x > 0 && y > 0 && x + y <= 0)
+        return 0;
+    if (x < 0 && y < 0 && x + y >= 0)
+        return 0;
+    return 1;
+}
+void ex30()
+{
+    int x, y;
+    x = 1 << 31;
+    y = -1;
+    printf("%d + %d = %d\n", x, y, x + y);
+    printf("%d - %d = %d\n", x + y, x, x + y - x);
+    printf("%d\n", tadd_ok(x, y)); // 1表示没有溢出，0表示溢出
+    x = 1 << 30;
+    y = x;
+    printf("%d + %d = %d\n", x, y, x + y);
+    printf("%d - %d = %d\n", x + y, x, x + y - x);
+    printf("%d\n", tadd_ok(x, y)); // 1表示没有溢出，0表示溢出
+}
+reflect(ex30);
+/* 练习题32 */
+int tsub_ok(int x, int y)
+{
+    // return tadd_ok(x, -y); // buggy code. 
+    // 注意 TMin （补码最小数）的非是它本身。当被减数等于 TMin 时结果等于 2^w + x， 是一定溢出的。
+    int TMin = 1 << 31;
+    return (y == TMin) ? 0 : tadd_ok(x, -y);
+}
+void ex32()
+{
+    int x, y;
+    x = 1;
+    y = 1 << 31;
+    printf("%d%d = %d\n", x, -y, x - y);
+    printf("%d\n", tsub_ok(x, y)); // 1表示没有溢出，0表示溢出
+}
+reflect(ex32);
 
 int main(int argc, char const *argv[])
 {
