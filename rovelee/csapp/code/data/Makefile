@@ -10,5 +10,8 @@ ex-test: ex-test.c
 fcomp: fcomp.c
 	gcc -O2 -o fcomp.test fcomp.c
 
+ex: ex.c
+	gcc -o ex ex.c
+
 clean:
-	rm -f *.o *.test
+	rm -f *.o *.test ex
