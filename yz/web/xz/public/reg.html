@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>信息添加</title>
+	<style>
+		.reg{
+			width: 220px;
+			height: auto;
+			background-color: aliceblue;
+			margin-left: 20px;
+			padding: 10px 10px 20px 10px;
+		}
+		.sub{
+			margin-top: 10px;
+			margin-left: 50px;
+		}
+		.ipt{
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="reg">
+		<form method="post" action="/v1/users/reg">
+			<h2>员工信息添加</h2>
+			姓名：<input type="text" name="uname" class="ipt"></br>
+			密码：<input type="text" name="upwd" class="ipt"></br>
+			邮箱：<input type="text" name="email" class="ipt"></br>
+			手机：<input type="text" name="phone" class="ipt"></br>
+			<input class="sub" type="submit" value="login">
+		</form>
+	</div>
+</body>
+</html>
