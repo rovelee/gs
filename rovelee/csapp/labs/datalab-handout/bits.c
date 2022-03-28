@@ -144,8 +144,9 @@ NOTES:
 int bitXor(int x, int y)
 {
   /*
-   * x 异或 y 等价于 （非x 与 y）或（x 与 非y）根据德摩根律，
-   * 再取次非将或运算转换成与运算
+   * x 异或 y 等价于 （x取反 与上 y）或上（x 与上 y取反），
+   * 然后根据德摩根律，
+   * 再取次反将或运算转换成与运算
    */
   return ~(~(~x & y) & ~(x & ~y));
 }
@@ -180,8 +181,8 @@ int isTmax(int x)
    * !*4     = 1          1          0          0          0
    * !*4&*!!3= 1          0          0          0          0
    */
-  int val1 = x+1;
-  int val2 = ~x^val1;
+  int val1 = x + 1;
+  int val2 = ~x ^ val1;
   return (!(!val1) & !val2);
 }
 /*
@@ -195,13 +196,12 @@ int isTmax(int x)
 int allOddBits(int x)
 {
   /*
-   * 
+   * 当 x 的奇数位都为 1 时，有 2^16 中种组合（即16个偶数位的组合）。
+   * 如果能够将偶数位全部变为1，然后取反得0，那么 x 的奇数位就全为1。
    */
-  int val = 0xAA;
-  val += val << 8;
-  val += val << 8;
-  val += val << 8;
-  return !(val ^ (x & val));
+  int e_8 = 0x55;
+  int e_32 = e_8 + (e_8 << 8) + (e_8 << 16) + (e_8 << 24);
+  return !(~(x | e_32));
 }
 /*
  * negate - return -x
@@ -212,7 +212,12 @@ int allOddBits(int x)
  */
 int negate(int x)
 {
-  return 2;
+  /*
+   * -x = 2^w - x
+   * -0 = 0
+   * 假设 w=4，x=0011，-x=1101，所以是取反再加1。
+   */
+  return ~x + 1;
 }
 // 3
 /*
@@ -226,7 +231,19 @@ int negate(int x)
  */
 int isAsciiDigit(int x)
 {
-  return 2;
+  /*
+   * 0011 0000 <= x <= 0011 1001
+   * 先排除高28位不等于0x3的值，如果高 28 位右移4位后不等于0x3，则返回 0。
+   * 然后判断低4位是否大于等于0，且小于等于9。
+   * 可以注意到，低3位等于0或1时，如 0、1、8、9 一定符合条件。
+   * 其他情况则要看第4位是否为0。如果为0则符合条件。
+   */
+  int is_high_24_eq_3 = !((x >> 4) ^ 3);
+  int low_3 = x & 0x7;
+  int is_low_3_eq_0_or_1 = (!(low_3 ^ 0) | !(low_3 ^ 1));
+  int is_w4_eq_0 = !((x >> 3) & 1);
+  int is_low_4_satisfy = is_low_3_eq_0_or_1 | is_w4_eq_0;
+  return is_high_24_eq_3 & is_low_4_satisfy;
 }
 /*
  * conditional - same as x ? y : z
@@ -237,7 +254,16 @@ int isAsciiDigit(int x)
  */
 int conditional(int x, int y, int z)
 {
-  return 2;
+  /*
+   * 三目运算，如果 x=1，则返回 y，否则返回 z。
+   * 首先应该将 x 转换为 bool 值，即 0 或 1。
+   * 如果 x 为 0，则 bx 是一个全为 0 的串;
+   * 如果 x 为 1，则 bx 是一个全为 1 的串。
+   * x & y = 0 或 y ，~x & z = z 或 0。
+   * 返回这两个集合的交。
+   */
+  int bx = (!!x) << 31 >> 31;
+  return (bx & y) | (~bx & z);
 }
 /*
  * isLessOrEqual - if x <= y  then return 1, else return 0
@@ -248,7 +274,28 @@ int conditional(int x, int y, int z)
  */
 int isLessOrEqual(int x, int y)
 {
-  return 2;
+  /*
+   * 如果 x = y，x ^ y=0，返回 1。
+   * 考虑 x<0，y>0，则返回 1。
+   * 考虑 x>0, y<0, 则返回 0。
+   * 考虑 x 和 y 同号：
+   * 则 x 如果小于 y，则 -x 大于 -y ，
+   * -x + y > -y + y = 2^w，
+   * 即 -x + y 会溢出，
+   * 且因为一正一负，所以符号位为一定为0,
+   * 即如果(-x + y)的符号位为0，返回1。
+   * 将可能返回 0 的值取反后和所有可能返回 1 的值的交做并后返回。
+   * （注意：要先判断为0的值，将这个值放在与前时如果为0则无需再继续与运算后的运算）
+   */
+  int is_eq = !(x ^ y);
+  int is_x_lt_0_and_y_gt_0 = ((x >> 31) & 1) & !((y >> 31) & 1);
+  int is_x_gt_0_and_y_lt_0 = ((y >> 31) & 1) & !((x >> 31) & 1);
+  int is_x_lt_y_same_sign = !((((~x + 1) + y) >> 31) & 1);
+  int is_x_le_y = !is_x_gt_0_and_y_lt_0 &
+                  (is_eq                |
+                   is_x_lt_0_and_y_gt_0 |
+                   is_x_lt_y_same_sign);
+  return is_x_le_y;
 }
 // 4
 /*
@@ -261,7 +308,33 @@ int isLessOrEqual(int x, int y)
  */
 int logicalNeg(int x)
 {
-  return 2;
+  /*
+   * 非运算只有在 x=0 时返回 1，其它情况下都返回 0。
+   * 即 0->1，[1...0xfffffffe] -> 0，
+   *  -x = ~x + 1，
+   * 当 x = 0 时，x & -x = 0
+   * 当 x ≠ 0 时，
+   *  x & -x = 1 << k (k=0,1,2...31)，
+   * 如： x=0x03，  -x=0xfd，x & -x = 1     (k=0)；
+   *      x = 0x5e，-x=0xa2，x & -x = 0x02 （k=1）.
+   * 为了将第 k 位的 1 取出作为判断标准，使用二分法进行或运算，32位需要5次移位和5次或运算，
+   * 最后得到 k = 1 或 0，将 k+1 取底一位的值进行返回。
+   */
+  int k = x;
+
+  int k_r = k >> 16;
+  k = k | k_r;
+  k_r = k >> 8;
+  k = k | k_r;
+  k_r = k >> 4;
+  k = k | k_r;
+  k_r = k >> 2;
+  k = k | k_r;
+  k_r = k >> 1;
+  k = k | k_r;
+  
+  k = (k + 1) & 1;
+  return k;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -277,6 +350,9 @@ int logicalNeg(int x)
  */
 int howManyBits(int x)
 {
+  int minum = 1;
+  int pv = x & 1;
+  int pi = 1;
   return 0;
 }
 // float
