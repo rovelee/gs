@@ -9,8 +9,9 @@ const pool=mysql.createPool({
 	user:'root',
 	password:'',
 	database:'xz',
-	connectionLimit:15 //连接池的数量，默认也是15个
+	connectionLimit:15
 });
+
 
 // 将连接池对象暴露出去
 module.exports=pool;

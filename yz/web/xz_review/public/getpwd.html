@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>找回密码</title>
+	<style>
+		.myd{
+			width: 220px;
+			height: auto;
+			background-color: aliceblue;
+			margin-left: 20px;
+			padding: 10px 10px 20px 10px;
+		}
+		.sub{
+			margin-top: 10px;
+			margin-left: 50px;
+		}
+		.ipt{
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+	<div class="myd">
+		<form method="post" action="/v1/users/getpwd">
+			<h2>找回密码</h2>
+			用  户：<input type="text" name="uid" class="ipt"></br>
+			邮  箱：<input type="text" name="email" class="ipt"></br>
+			新密码：<input type="text" name="upwd" class="ipt"></br>
+			<input class="sub" type="submit" value="login">
+		</form>
+	</div>
+</body>
+</html>
