@@ -408,7 +408,16 @@ int howManyBits(int x)
  */
 unsigned floatScale2(unsigned uf)
 {
-  return 2;
+  int s, e, m;
+  e = (uf & (0xff << 23)) >> 23;
+  if (!(e ^ 0xff))
+    return uf;
+  s = uf >> 31 << 31;
+  m = uf << 9 >> 9;
+  if (!e)
+    return s | (m << 1);
+  e = (e + 1) << 23;
+  return s | e | m;
 }
 /*
  * floatFloat2Int - Return bit-level equivalent of expression (int) f
@@ -424,7 +433,39 @@ unsigned floatScale2(unsigned uf)
  */
 int floatFloat2Int(unsigned uf)
 {
-  return 2;
+  int s, e, m, v;
+
+  e = (uf & (0xff << 23)) >> 23;
+
+  /* 指数域全为1则为无限大或者NaN */
+  if (!(e ^ 0xff))
+    return 0x80000000u;
+  /* 指数域全为0则返回 0 */
+  if (!(e ^ 0))
+    return 0;
+
+  /* 规格化浮点数时则根据公式 v=(-1)^s*M*2^E 进行计算 */
+  /* 减去偏移量得到指数 */
+  e = e - 127;
+  /* 取符号位 */
+  s = uf >> 31;
+  /* M 的小数域的值，包含隐藏的小数点前的 1*/
+  m = (uf << 9 >> 9) | (1 << 23);
+
+  // printf("s:%x\n", s);
+  // printf("e:%x\n", e);
+  // printf("m:%x\n", m);
+
+  /* 考虑 指数小于0的情况，f 是一个小于 1 的小数，向下取整返回 0 */
+  if (e < 0)
+    return 0;
+  /* 考虑指数大于 32 时，会发生溢出，返回 0x80000000 */
+  if (e > 32)
+    return 0x80000000u;
+  /* 指数为正数 ，则 M 右移 e 位 */
+  v = ((m << e) >> 23);
+
+  return s ? -v : v;
 }
 /*
  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
@@ -441,5 +482,19 @@ int floatFloat2Int(unsigned uf)
  */
 unsigned floatPower2(int x)
 {
-  return 2;
+  int s, e, m;
+  unsigned inf;
+  inf = 0xff << 23;
+  
+  /* x的符号 */
+  s = x >> 31;
+  /* 如果 x > 128，2^x 超出上限，返回 +INF */
+  if(x>128)
+    return inf;
+  /* 如果 x < 127, 2^x 超出下限，返回 0 */
+  if(x<-127)
+    return 0;
+  /* 规格化 */
+  e = (x + 127) & 0xff;
+  return e << 23;
 }
