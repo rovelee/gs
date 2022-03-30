@@ -482,5 +482,19 @@ int floatFloat2Int(unsigned uf)
  */
 unsigned floatPower2(int x)
 {
-  return 2;
+  int s, e, m;
+  unsigned inf;
+  inf = 0xff << 23;
+  
+  /* x的符号 */
+  s = x >> 31;
+  /* 如果 x > 128，2^x 超出上限，返回 +INF */
+  if(x>128)
+    return inf;
+  /* 如果 x < 127, 2^x 超出下限，返回 0 */
+  if(x<-127)
+    return 0;
+  /* 规格化 */
+  e = (x + 127) & 0xff;
+  return e << 23;
 }
