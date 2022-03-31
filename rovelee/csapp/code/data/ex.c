@@ -189,7 +189,7 @@ reflect(ex30);
 /* 练习题32 */
 int tsub_ok(int x, int y)
 {
-    // return tadd_ok(x, -y); // buggy code. 
+    // return tadd_ok(x, -y); // buggy code.
     // 注意 TMin （补码最小数）的非是它本身。当被减数等于 TMin 时结果等于 2^w + x， 是一定溢出的。
     int TMin = 1 << 31;
     return (y == TMin) ? 0 : tadd_ok(x, -y);
@@ -203,6 +203,70 @@ void ex32()
     printf("%d\n", tsub_ok(x, y)); // 1表示没有溢出，0表示溢出
 }
 reflect(ex32);
+/* 以下代码禁止使用（测试代码除外）
+    1、条件语句、循环、分支语句、函数调用、和宏调用。
+    2、除法、模运算和乘法。
+    3、相对比较运算。
+*/
+/* 61 */
+void ex61()
+{
+    int x1 = -1;
+    int x2 = 0;
+    int x3 = 0xff;
+    int x4 = ~0xff;
+
+    printf("x:%d, A:%d, B:%d, C:%d, D:%d\n", x1, !(x1 ^ -1), !(x1 ^ 0), !((x1 & 0xff) ^ 0xff), !((x1 & 0xff) ^ 0));
+    printf("x:%d, A:%d, B:%d, C:%d, D:%d\n", x2, !(x2 ^ -1), !(x2 ^ 0), !((x2 & 0xff) ^ 0xff), !((x2 & 0xff) ^ 0));
+    printf("x:%d, A:%d, B:%d, C:%d, D:%d\n", x3, !(x3 ^ -1), !(x3 ^ 0), !((x3 & 0xff) ^ 0xff), !((x3 & 0xff) ^ 0));
+    printf("x:%d, A:%d, B:%d, C:%d, D:%d\n", x4, !(x4 ^ -1), !(x4 ^ 0), !((x4 & 0xff) ^ 0xff), !((x4 & 0xff) ^ 0));
+}
+reflect(ex61);
+/* 62 */
+int int_shifts_are_arithmetic()
+{
+    return !((-1 >> (sizeof(int) * 8 - 1)) ^ -1);
+}
+void ex62()
+{
+    printf("%d\n", int_shifts_are_arithmetic());
+}
+reflect(ex62);
+/* 63、 solve code 中禁用右移和除法，srl 返回逻辑右移 k 位的 x，sra返回算术右移 k 位的 x*/
+unsigned srl(unsigned x, int k)
+{
+    /* Perform shift arithmetically */
+    unsigned xsra = (int)x >> k;
+    /* solve code */
+    int w = 8 * sizeof(int);
+    unsigned mask = ~(-1 << (w - k));
+    return mask & xsra;
+}
+int sra(int x, int k)
+{
+    /* Perform shift logically */
+    int xsrl = (unsigned)x >> k;
+    /* solve code */
+    int w = 8 * sizeof(int);
+    int s = !!(x & (1 << (w - 1)) ^ 0);
+    // printf("%d\n",s);
+    unsigned mask = ((~s + 1) << (w - k));
+    // printf("%x",mask);
+    return mask | xsrl;
+}
+void ex63()
+{
+    int x = -1;
+    int x2 = 0;
+    int x3 = 0xff;
+    int x4 = ~0xff;
+    int k = 16;
+    printf("srl test: %x, sra test: %x\n", srl(x, k) == ((unsigned)x >> k), sra(x, k) == (x >> k));
+    printf("srl test: %x, sra test: %x\n", srl(x2, k) == ((unsigned)x2 >> k), sra(x2, k) == (x2 >> k));
+    printf("srl test: %x, sra test: %x\n", srl(x3, k) == ((unsigned)x3 >> k), sra(x3, k) == (x3 >> k));
+    printf("srl test: %x, sra test: %x\n", srl(x4, k) == ((unsigned)x4 >> k), sra(x4, k) == (x4 >> k));
+}
+reflect(ex63);
 
 int main(int argc, char const *argv[])
 {
