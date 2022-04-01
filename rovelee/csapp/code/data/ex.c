@@ -267,6 +267,45 @@ void ex63()
     printf("srl test: %x, sra test: %x\n", srl(x4, k) == ((unsigned)x4 >> k), sra(x4, k) == (x4 >> k));
 }
 reflect(ex63);
+/* 64 */
+/* Return 1 when any odd bit of x equals 1; 0 otherwise.
+    Assume w=32 */
+int any_odd_one(unsigned x)
+{
+    int even_one = 0xAA;
+    int mask = even_one | (even_one << 8);
+    mask = even_one | (mask << 8);
+    mask = even_one | (mask << 8);
+    // printf("%x\n",mask|x);
+    return !(~(mask | x));
+}
+void ex64()
+{
+    unsigned x = 0x55555555;
+    printf("%d\n", any_odd_one(x));
+    x = 0x55555;
+    printf("%d\n", any_odd_one(x));
+}
+reflect(ex64);
+/* 65 */
+/* Return 1 when x contains an odd number of 1s; 0 otherwise.
+    Assume w=32 */
+int odd_ones(unsigned x)
+{
+    int odd_one = 0x55;
+    int mask = odd_one | (odd_one << 8);
+    mask = odd_one | (mask << 8);
+    mask = odd_one | (mask << 8);
+    return !!(mask & x);
+}
+void ex65()
+{
+    unsigned x = 0x55555555;
+    printf("%d\n", odd_ones(x));
+    x = 0xaa;
+    printf("%d\n", odd_ones(x));
+}
+reflect(ex65);
 
 int main(int argc, char const *argv[])
 {
