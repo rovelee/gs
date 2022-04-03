@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>ajaxPOST请求数据库</title>
+</head>
+<body>
+    <form method="" action="">
+        请输入账号：<input type="text" id="uname" onblur="myOnblur()">
+        <span style="color:red" id="umsg"></span><br>
+        请输入密码：<input type="password" id="upwd" onblur="myOnblur1()">
+        <span style="color:red" id="pmsg"></span><br>
+        <input type="button" id="btn" value="登录">
+    </form>
+
+    <script>
+        // 获取html标签
+        let uname = document.getElementById('uname');
+        let u_pwd = document.getElementById('upwd');
+        let n_msg = document.getElementById('umsg');
+        let p_msg = document.getElementById('pmsg');
+        let btn = document.getElementById('btn');
+        // 设置正则表达式，验证用户名密码
+        let reg = /^[A-Za-z\d]{3,9}$/;
+
+        // 设置输入框失去焦点事件
+        function myOnblur(){
+            if(reg.test(uname.value)){
+                // 如果格式正确，不做提示
+                n_msg.innerHTML = "";
+            }else{
+                n_msg.innerHTML = "用户名格式错误";
+                // 并阻止程序向后执行
+                return;
+            }
+        }
+        function myOnblur1(){
+            if(reg.test(u_pwd.value)){
+                p_msg.innerHTML = "";
+            }else{
+                p_msg.innerHTML = "密码格式错误";
+                return;
+            }
+        }
+        // 用户名密码格式都正确之后，发送ajax请求
+        // 设置按钮点击事件
+        btn.onclick = function(){
+            // 创建ajax对象
+            let xhr = new XMLHttpRequest();
+            // 设置请求数据的URL
+            let url = "http://127.0.0.1:2022/v1/admin/login";
+            xhr.open('POST',url,true);
+            // 指定发送数据类型
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            // 发送数据
+            // xhr.send(`a_name${uname.value}&a_upwd${u_pwd.value}`);
+            xhr.send("a_name="+uname.value +"&"+ "a_pwd="+u_pwd.value);
+            // 为xhr绑定事件
+            xhr.onreadystatechange = function(){
+                // xhr.status:保存了服务器状态码,200是服务器正常
+                // xhr.readyState:xhr状态数据,4是请求数据完全返回
+                if(xhr.status === 200 & xhr.readyState=== 4){
+                    // 服务器返回的是json字符串，需要转为js对象
+                    let rows = JSON.parse(xhr.responseText);
+                    // 如果返回的数据code=1,说明和数据库中信息匹配正确
+                    if(rows.code === 1){
+                        alert("登录成功！");
+                        location = "main.html";
+                    }else{
+                        // 反之说明数据不正确
+                        alert("用户名或密码错误");
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
