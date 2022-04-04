@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理员登录</title>
+</head>
+<body>
+    <h2>管理员登录</h2>
+    <form action="">
+        请输入账号：<input type="text" id="aname" onblur="myName()">
+        <span style="color:red" id="nmsg"></span><br>
+        请输入密码：<input type="password" name="" id="apwd" onblur="myPwd">
+        <span style="color:red" id="pmsg"></span><br>
+        <input type="button" value="登录" id="btn">
+    </form>
+
+    <script>
+        let aname = document.getElementById('aname');
+        let nmsg = document.getElementById('nmsg');
+        let apwd = document.getElementById('apwd');
+        let pmsg = document.getElementById('pmsg');
+        let btn = document.getElementById('btn');
+        let reg = /^[A-Za-z\d]{3,11}$/;
+
+        function myName(){
+            if(reg.test(aname.value)){
+                nmsg.innerHTML = "";
+            }else{
+                nmsg.innerHTML = "账号格式错误";
+                return;
+            }
+        }
+        function myPwd(){
+            if(reg.test(apwd.value)){
+                pmsg.innerHTML = "";
+            }else{
+                pmsg.innerHTML = "密码格式错误";
+                return;
+            }
+        }
+
+        btn.onclick = function(){
+            let xhr = new XMLHttpRequest();
+            let url = "http://127.0.0.1:3000/v1/admin/login";
+            xhr.open("POST",url,true);
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            xhr.send(`aname=${aname.value}&apwd=${apwd.value}`);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 & xhr.status === 200){
+                    let rows = JSON.parse(xhr.responseText);
+                    console.log(rows);
+                    if(rows.code === 1){
+                        alert('登陆成功！')
+                        location.href = "list.html";
+                    }else{
+                        alert('管理员账号或密码错误。');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
