@@ -2,19 +2,18 @@
 const express = require('express');
 // 创建服务器
 const app = express();
-// 设置端口为2022
-app.listen(2022)
-// 引入管理员路由器
+// 设置端口为3000
+app.listen(3000);
+
+// 引入用户路由器模块
+const userRouter = require('./routers/user.js');
+// 引入管理员路由器模块
 const adminRouter = require('./routers/admin.js');
-// 引入cors
-const cors = require("cors");
 
-// 将传递的参数存入对象
-app.use(express.urlencoded({
-    extended:true
-}));
-
+// 引入cors模块
+const cors = require('cors');
 //跨域设置(所有域名)
+
 app.use(cors({
     origin:['http://localhost:8848','http://127.0.0.1:8848'],
     origin:['http://localhost:5500','http://127.0.0.1:5500'],  //指定接收的地址
@@ -22,16 +21,19 @@ app.use(cors({
     alloweHeaders:['Content-Type','Authorization']  //指定header
 }));
 
+// 将传递的参数转为对象
+app.use(express.urlencoded({
+    extended:true
+}));
 // 设置静态资源管理
 app.use(express.static('./public'));
-
-// 使用管理员路由器，并添加前缀为 /v1/admin
+// 挂载用户路由器,并添加前缀为 /v1/users
+app.use('/v1/users',userRouter);
+// 挂载管理员路由器，并添加前缀为 /v1/admin
 app.use('/v1/admin',adminRouter);
 
-// 在所有路由的后面设置错误处理中间件，拦截所有路由的错误
+// 在所有路由的后面，设置错误处理中间件，拦截所有路由错误
 app.use((err,req,res,next)=>{
-    if(err){
-        console.log(err);
-    }
-    res.send({code:502,msg:'服务器端错误'});
+    if(err){console.log(err);}
+    res.send({code:502,msg:'服务器错误'});
 });
