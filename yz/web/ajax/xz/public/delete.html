@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>删除用户</title>
+</head>
+<body>
+    <h2>管理员删除用户</h2>
+    要删除的用户：<br>
+    <input type="text" id="uid">
+    <input type="button" id="btn" value="提交">
+
+    <script>
+        let uid = document.getElementById('uid');
+        let btn = document.getElementById('btn');
+
+        btn.onclick = function(){
+            // console.log(uid.value);
+            let xhr = new XMLHttpRequest();
+            let url = "http://127.0.0.1:3000/v1/admin/del/";
+            xhr.open("DELETE",url+uid.value,true);
+            // xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            xhr.send();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 & xhr.status ===200){
+                    let rows = JSON.parse(xhr.responseText);
+                    if(rows.code === 1){
+                        alert('删除成功');
+                        location.href = "list.html";
+                    }else{
+                        alert('该用户不存在');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

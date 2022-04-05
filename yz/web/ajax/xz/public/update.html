@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户注册</title>
+    <style>
+		.div{
+			width: 340px;
+			height: auto;
+			background-color: aliceblue;
+			margin-left: 20px;
+			padding: 10px 10px 20px 10px;
+		}
+		.btn{
+			margin-top: 10px;
+			margin-left: 50px;
+		}
+		.ipt{
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+    <div class="div">
+		<form method="post" action="">
+			<h2 style="padding-left: 90px;">用户注册</h2>
+			用户：<input type="text" id="uname" class="ipt" onblur="myName()">
+            <span id="nmsg" style="color:red"></span></br>
+			密码：<input type="text" id="upwd" class="ipt" onblur="myPwd()">
+            <span id="pmsg" style="color:red"></span></br>
+			邮箱：<input type="text" id="email" class="ipt" onblur="myEmail()">
+            <span id="emsg" style="color:red"></span></br>
+			手机：<input type="text" id="phone" class="ipt" onblur="myPhone()">
+            <span id="phmsg" style="color:red"></span></br>
+			<input class="btn" type="button" id="btn" value="login">
+		</form>
+	</div>
+
+    <script>
+        let uname = document.getElementById('uname');
+        let nmsg = document.getElementById('nmsg');
+        let upwd = document.getElementById('upwd');
+        let pmsg = document.getElementById('pmsg');
+        let email = document.getElementById('email');
+        let emsg = document.getElementById('emsg');
+        let phone = document.getElementById('phone');
+        let phmsg = document.getElementById('phmsg');
+        let btn = document.getElementById('btn');
+        let reg = /^[A-Za-z\d]{3,11}$/;
+        let reg_e = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+        let reg_p = /^1[3-9]\d{9}$/;
+
+        function myName(){
+            if(reg.test(uname.value)){
+                nmsg.innerHTML = "";
+            }else{
+                nmsg.innerHTML = "用户名格式错误";
+                return;
+            }
+        }
+        function myPwd(){
+            if(reg.test(upwd.value)){
+                pmsg.innerHTML = "";
+            }else{
+                pmsg.innerHTML = "密码格式错误";
+                return;
+            }
+        }
+        function myEmail(){
+            if(reg_e.test(email.value)){
+                emsg.innerHTML = "";
+            }else{
+                emsg.innerHTML = "邮箱格式错误";
+                return;
+            }
+        }
+        function myPhone(){
+            if(reg_p.test(phone.value)){
+                phmsg.innerHTML = "";
+            }else{
+                phmsg.innerHTML = "手机号格式错误";
+                return;
+            }
+        }
+        btn.onclick = function(){
+            let xhr = new XMLHttpRequest();
+            let url = "http://127.0.0.1:3000/v1/users/update";
+            xhr.open('POST',url,true);
+            xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+            xhr.send(`uname=${uname.value}&upwd=${upwd.value}&email=${email.value}&phone=${phone.value}`);
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 & xhr.status===200){
+                    let rows = JSON.parse(xhr.responseText);
+                    console.log(rows);
+                    if(rows.code === 1){
+                        alert('注册成功！');
+                        location.href = "login.html";
+                    }else{
+                        alert('请审核信息格式');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户列表</title>
+</head>
+<body>
+    <h2 align="center">用户管理页面</h2>
+    <table border="1" style="background-color:aliceblue" width="60%" align="center">
+        <thead>
+            <tr>
+                <th>编号</th>
+                <th>用户名</th>
+                <th>邮箱</th>
+                <th>手机号</th>
+                <th>姓名</th>
+                <th>性别</th>
+                <th>管理</th>
+            </tr>
+        </thead>
+        <tbody id="tb" align="center">
+
+        </tbody>
+    </table>
+
+    <script>
+        let tb = document.getElementById('tb');
+
+        let xhr = new XMLHttpRequest();
+        let url = "http://127.0.0.1:3000/v1/admin/list";
+        xhr.open("GET",url,true);
+        xhr.send();
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState === 4 & xhr.status ===200){
+                let rows = JSON.parse(xhr.responseText);
+                console.log(rows);
+                let obj = rows.data;
+                for(i = 0,str = "";i < obj.length;i++){
+                    let sex = "";
+                    if(obj[i].gender === 1){
+                        sex = "男";
+                    }else if(obj[i].gender === 0){
+                        sex = "女";
+                    }else{
+                        sex = "保密";
+                    }
+                    let name = "";
+                    if(obj[i].user_name !== null){
+                        name = obj[i].user_name;
+                    }else{
+                        name = "匿名";
+                    }
+                    str += `
+                        <tr  id="tr${obj[i].uid}" value="${obj[i].uid}">
+                            <td>${obj[i].uid}</td>
+                            <td>${obj[i].uname}</td>
+                            <td>${obj[i].email}</td>
+                            <td>${obj[i].phone}</td>
+                            <td>${name}</td>
+                            <td>${sex}</td>
+                            <td>
+                                <input type="button" value="修改" onclick="clickUpdate()">
+                                <input type="button" value="删除" onclick="clickDelete()">
+                            </td>
+                        </tr>
+                    `
+                }
+                tb.innerHTML = str;
+            }
+        }
+
+        function clickUpdate(){
+            location.href = "update_put.html"
+        }
+        function clickDelete(){
+            location.href = "delete.html";
+        }
+    </script>
+</body>
+</html>
