@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>网鹅Music</title>
+</head>
+<body>
+    <h2>首页</h2>
+    <!-- <h3 id="user"></h3> -->
+    <!-- <span id="user">1</span> -->
+    <form action="">
+        <input type="button" value="修改信息" id="btn">
+        <!-- <input type="text" id="test" value="" placeholder="111">
+        <input type="button" value="测试" id="btn1"> -->
+    </form>
+
+    <script>
+        /* btn1.onclick = function(){
+            console.log(test.value);
+            console.log(test.placeholder);
+        } */
+
+        let str = location.search;
+        let obj = new URLSearchParams(str);
+        let user = obj.get("uname");
+        console.log(user);
+
+
+        btn.onclick = function(){
+            // alert(user);
+            let url = "update.html?";
+            url += "uname="+user;
+            location.href = url;
+        }
+    </script>
+</body>
+</html>

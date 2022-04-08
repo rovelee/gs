@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理员管理页面</title>
+</head>
+<body>
+    <h2 align="center">管理员管理页面</h2>
+    <table border="1" align="center" width="50%">
+        <thead align="center">
+            <th>用户</th>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>是否是会员</th>
+            <th>操作</th>
+        </thead>
+        <tbody align="center" id="tb">
+
+        </tbody>
+    </table>
+
+    <script>
+        // 保存了Ajax请求用户信息、遍历代码
+        function init(){
+            let xhr = new XMLHttpRequest();
+            let url = "http://127.0.0.1:3000/v1/admin/list";
+            xhr.open("GET",url,true);
+            xhr.send();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 & xhr.status === 200){
+                    let rows = JSON.parse(xhr.responseText);
+                    console.log(rows);
+                    for(i = 0,str = "";i < rows.data.length;i++){
+                        let obj = rows.data[i];
+                        let sex = "";
+                        if(obj.gender === 1){
+                            sex = "男";
+                        }else if(obj.gender === 0){
+                            sex = "女";
+                        }else{
+                            sex = "保密";
+                        }
+                        str += `
+                        <tr>
+                            <td>${obj.uname}</td>
+                            <td>${obj.user_name}</td>
+                            <td>${sex}</td>
+                            <td>${obj.vip?"是":"未加入"}</td>
+                            <td><a href="javascript:;" onclick="myDelete(${obj.uid})">删除</a></td>
+                        </tr>
+                        `;
+                    }
+                    tb.innerHTML = str;
+                }
+            }
+        }
+        init();
+
+        function myDelete(uid){
+            let is_sure = confirm("是否确认删除？");
+            if(!is_sure){
+                return;
+            }
+            let xhr = new XMLHttpRequest();
+            let url = "http://127.0.0.1:3000/v1/admin/del/"+uid;
+            xhr.open("DELETE",url,true);
+            xhr.send();
+            xhr.onreadystatechange = function(){
+                if(xhr.readyState === 4 & xhr.status === 200){
+                    let rows = JSON.parse(xhr.responseText);
+                    console.log(rows);
+                    if(rows.code === 1){
+                        alert("删除成功！");
+                        init();
+                    }else{
+                        alert("删除失败。");
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

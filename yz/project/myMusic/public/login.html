@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>用户登录</title>
+    <style>
+        .myDiv {
+            width: 360px;
+            height: auto;
+            background-color: aliceblue;
+            padding: 20px 0 20px 30px;
+        }
+        input {
+            margin: 10px 0;
+        }
+        #btn {
+            margin-left: 50px;
+        }
+        span {
+            color: red;
+            font-size: 14px;
+        }
+        h2 {
+            margin-left: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="myDiv">
+        <h2>用户登录</h2>
+        <form action="">
+            用户：<input type="text" id="uname" placeholder="请输入用户名" onblur="myName()">
+            <span id="n_msg"></span><br>
+            密码：<input type="text" id="upwd" placeholder="请输入密码" onblur="myPwd()">
+            <span id="p_msg"></span><br>
+            <input type="button" value="登录" id="btn">
+        </form>
+
+        <script>
+            let reg = /^[A-Za-z\d]{3,11}$/;
+            function myName(){
+                if(reg.test(uname.value)){
+                    n_msg.innerHTML = "";
+                }else{
+                    n_msg.innerHTML = "账号格式错误！";
+                    return;
+                }
+            }
+            function myPwd(){
+                if(reg.test(upwd.value)){
+                    p_msg.innerHTML = "";
+                }else{
+                    p_msg.innerHTML = "密码格式错误";
+                    return;
+                }
+            }
+
+            btn.onclick = function(){
+                let xhr = new XMLHttpRequest();
+                let url = "http://127.0.0.1:3000/v1/users/login";
+                xhr.open("POST",url,true);
+                xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+                xhr.send(`uname=${uname.value}&upwd=${upwd.value}`);
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState === 4 & xhr.status === 200){
+                        let rows = JSON.parse(xhr.responseText);
+                        let obj = rows.data;
+                        console.log(rows);
+                        if(rows.code === 1){
+                            alert("登录成功！");
+                            let url = "index.html?";
+                            url += "uname="+obj[0].uname;
+                            location.href = url;
+                        }else{
+                            alert("账号或密码错误。");
+                        }
+                    }
+                }
+            }
+
+
+        </script>
+    </div>
+</body>
+</html>
