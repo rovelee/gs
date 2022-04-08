@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>管理员查询用户信息</title>
+    <style>
+        .myDiv {
+            width: 300px;
+            height: auto;
+            background-color: aliceblue;
+            padding: 0 0 20px 30px;
+        }
+        input {
+            margin: 10px 0;
+        }
+        #btn {
+            margin-left: 50px;
+        }
+        span {
+            color: red;
+            font-size: 14px;
+        }
+        h2 {
+            margin-left: 50px;
+        }
+        #msg {
+            margin-left: 50px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="myDiv">
+        <h2></h2>
+        <form action="">
+            <span id="msg"></span><br>
+            编号：<input type="text" id="uid" placeholder="要查询的用户ID"><br>
+            姓名：<input type="text" id="user_name" placeholder="姓名">
+            <span id="n_msg"></span><br>
+            邮箱：<input type="text" id="email" placeholder="邮箱">
+            <span id="e_msg"></span><br>
+            手机：<input type="text" id="phone" placeholder="手机号">
+            <span id="p_msg"></span><br>
+            性别：
+            <input type="radio" name="gender" value="1" id="man">男&nbsp;
+            <input type="radio" name="gender" value="0" id="woman">女&nbsp;
+            <input type="radio" name="gender" value="-1" id="secrecy">保密&nbsp;<br>
+            <input type="button" value="查询" id="btn">
+        </form>
+
+        <script>
+            btn.onclick = function(){
+                let xhr = new XMLHttpRequest();
+                let url = "http://127.0.0.1:3000/v1/admin/search/"+uid.value;
+                xhr.open("GET",url,true);
+                xhr.send();
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState === 4 & xhr.status === 200){
+                        let rows = JSON.parse(xhr.responseText);
+                        let obj = rows.data;
+                        console.log(rows);
+                        if(rows.code === 0){
+                            uid.value = "";
+                            user_name.value = "";
+                            email.value = "";
+                            phone.value = "";
+                            msg.innerHTML = "没有此用户。";
+                            man.checked = false;
+                            woman.checked = false;
+                            secrecy.checked = false;
+                        }else{
+                            msg.innerHTML = "";
+                            uid.value = obj[0].uid;
+                            user_name.value = obj[0].user_name;
+                            email.value = obj[0].email;
+                            phone.value = obj[0].phone;
+                            if(obj[0].gender === 1){
+                                man.checked = true;
+                            }else if(obj[0].gender === 0){
+                                woman.checked = true;
+                            }else{
+                                secrecy.checked = true;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+
+            btn.onclick = function(){
+                let xhr = new XMLHttpRequest();
+                let url = "http://127.0.0.1:3000/v1/admin/search/"+uid.value;
+                xhr.open("GET",url,true);
+                xhr.send();
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState === 4 & xhr.status === 200){
+                        let rows = JSON.parse(xhr.responseText);
+                        let obj = rows.data;
+                        console.log(rows);
+                        if(rows.code === 0){
+                            uid.value = "";
+                            user_name.value = "";
+                            email.value = "";
+                            phone.value = "";
+                            msg.innerHTML = "没有此用户。";
+                            man.checked = false;
+                            woman.checked = false;
+                            secrecy.checked = false;
+                        }else{
+                            msg.innerHTML = "";
+                            uid.value = obj[0].uid;
+                            user_name.value = obj[0].user_name;
+                            email.value = obj[0].email;
+                            phone.value = obj[0].phone;
+                            if(obj[0].gender === 1){
+                                man.checked = true;
+                            }else if(obj[0].gender === 0){
+                                woman.checked = true;
+                            }else{
+                                secrecy.checked = true;
+                            }
+                        }
+                        
+                    }
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
