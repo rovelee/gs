@@ -24,5 +24,24 @@ N    tree_findMax(T tree);
 /*
  * 补充方法：
  */
+T    tree_clear    (T tree);
+void tree_preorder (T tree);
+void tree_inorder  (T tree);
+void tree_postorder(T tree);
 
 #endif
+/*
+// 二叉树结构
+sturct N
+{
+    E elem;
+    N *left;
+    N *right;
+}
+struct T
+{
+    int count;
+    int depth;
+    N *root;
+}
+*/

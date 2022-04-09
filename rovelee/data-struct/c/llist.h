@@ -10,12 +10,14 @@ typedef struct N *N;
  */
 T    llst_new   (void);
 void llst_free  (T lst);
+
 /*
  * 基本操作：
  */
 N    llst_search(T lst, int k);
 void llst_insert(T lst, N x);
 void llst_delete(T lst, N x);
+
 /*
  * 补充方法：
  */

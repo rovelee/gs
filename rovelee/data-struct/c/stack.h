@@ -9,11 +9,13 @@ typedef struct T *T;
  */
 T     stk_new    (void);
 void  stk_free   (T *stk);
+
 /*
  * 基本操作：
  */
 void  push       (T stk, void *x);
 E     pop        (T stk);
+
 /*
  * 补充方法：
  */

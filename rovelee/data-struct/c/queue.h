@@ -9,11 +9,13 @@ typedef struct T *T;
  */
 T    que_new    (void);
 void que_free   (T que);
+
 /*
  * 基本操作：
  */
 void enqueue    (T que, void *x);
 E    dequeue    (T que);
+
 /*
  * 补充方法：
  */
