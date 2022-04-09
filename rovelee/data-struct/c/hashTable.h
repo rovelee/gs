@@ -44,7 +44,7 @@ struct N
 struct T
 {
     const int size = MAX_HASH_TABLE_SIZE;
-    N *table[size];
+    N *slot[size];
 };
 // 直接寻址表：槽k -> 全域U，略
 // 除法散列法：
