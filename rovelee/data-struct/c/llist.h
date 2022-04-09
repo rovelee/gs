@@ -3,8 +3,8 @@
 #define T LinkedList
 #define N Node
 
+typedef struct T *T;
 typedef struct N *N;
-typedef N T;
 /*
  * 创建和销毁操作
  */
@@ -16,20 +16,31 @@ void llst_free  (T lst);
 N    llst_search(T lst, int k);
 void llst_insert(T lst, N x);
 void llst_delete(T lst, N x);
-
-int llst_isEmpty(T lst);
-
+/*
+ * 补充方法：
+ */
+int  llst_isEmpty(T lst);
+int  llst_isLast (T lst, N x);
+N    llst_head   (T lst);
+N    llst_tail   (T lst);
+T    llst_clear  (T lst);
+void llst_show   (T lst);
 
 #undef T
 #undef N
 #endif
 /*
- * 单链表结构
+// 单链表结构
 struct N
 {
     N *next;
     E elem;
-}
+};
+struct T
+{
+    int length;
+    N *head;
+};
 // 双链表结构
 struct N
 {
@@ -37,4 +48,18 @@ struct N
     N *next;
     E elem;
 };
+
+struct T
+{
+    int length;
+    N *head;
+    N *tail;
+}
+
+//哨兵双循环列表
+struct T
+{
+    int length;
+    N *nil;
+}
 */
