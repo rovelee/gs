@@ -29,6 +29,8 @@ void tree_preorder (T tree);
 void tree_inorder  (T tree);
 void tree_postorder(T tree);
 
+#undef T
+#undef N
 #endif
 /*
 // 二叉树结构
