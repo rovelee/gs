@@ -3,8 +3,8 @@
 #define T LinkedList
 #define N Node
 
-typedef struct T *T;
 typedef struct N *N;
+typedef N T;
 /*
  * 创建和销毁操作
  */
